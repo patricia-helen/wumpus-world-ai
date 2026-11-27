@@ -219,3 +219,22 @@ class World:
             "done": self.done,
             "won": self.won
         }
+    def reset(self, seed: int | None = None) -> None:
+        """Reinicia o mundo, criando um novo mapa e restaurando o agente."""
+        # Recria o mapa (gera novos poços, Wumpus e ouro)
+        self.config = generate_world(size=self.size, num_wumpus=len(self.wumpus),
+                                     num_pits=len(self.pits), seed=seed)
+        
+        self.pits = self.config.pits
+        self.wumpus = self.config.wumpus
+        self.gold = self.config.gold
+        
+        # Reseta o agente para a posição inicial
+        self.agent.reset(start_pos=self.config.start_pos, arrows=self.config.arrows)
+        
+        # Reseta os status da partida
+        self.done = False
+        self.won = False
+        self.cause_of_death = None
+        self.bump = False
+        self.scream = False
